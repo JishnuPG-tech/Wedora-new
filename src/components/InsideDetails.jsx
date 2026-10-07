@@ -1,191 +1,85 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion as Motion, useInView } from 'framer-motion';
-import { weddingData } from '../config/weddingData';
+import { CalendarDays, Clock3, Heart, MapPinned } from "lucide-react";
+import { motion } from "framer-motion";
+import Reveal from "./Reveal";
+import { weddingData } from "../config/weddingData";
 
-const WEDDING_DATE = new Date(weddingData.dates.preciseDateIso);
-
-function getTimeLeft() {
-  const now = new Date();
-  const diff = WEDDING_DATE - now;
-  if (diff <= 0) return { days: 0, hours: 0, minutes: 0, seconds: 0 };
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  return { days, hours, minutes, seconds };
-}
-
-const DetailRow = ({ label, value, delay = 0 }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-
-  return (
-    <Motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: 'easeOut', delay }}
-      className="text-center py-4"
-    >
-      <div className="font-inter text-[10px] uppercase tracking-[0.3em] text-[#B8913A] mb-1">{label}</div>
-      <p className="font-cormorant text-2xl font-medium text-[var(--text-dark)] leading-tight">{value}</p>
-    </Motion.div>
-  );
-};
-
-const MuralDivider = ({ delay = 0 }) => {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: '-60px' });
-  return (
-    <Motion.div
-      ref={ref}
-      initial={{ opacity: 0, scaleX: 0 }}
-      animate={inView ? { opacity: 1, scaleX: 1 } : {}}
-      transition={{ duration: 0.7, ease: 'easeOut', delay }}
-      className="flex items-center gap-3 my-1"
-    >
-      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[rgba(107,142,107,0.3)] to-transparent" />
-      <svg width="24" height="16" viewBox="0 0 24 16" fill="none">
-        <circle cx="12" cy="8" r="3" fill="#B8913A" fillOpacity="0.5"/>
-        <circle cx="4" cy="8" r="1.5" fill="#6B8E6B" fillOpacity="0.4"/>
-        <circle cx="20" cy="8" r="1.5" fill="#6B8E6B" fillOpacity="0.4"/>
-      </svg>
-      <div className="flex-1 h-px bg-gradient-to-r from-transparent via-[rgba(107,142,107,0.3)] to-transparent" />
-    </Motion.div>
-  );
-};
-
-const MinimalCountdown = () => {
-  const [time, setTime] = useState(getTimeLeft());
-  const isPast = WEDDING_DATE <= new Date();
-
-  useEffect(() => {
-    const interval = setInterval(() => setTime(getTimeLeft()), 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (isPast) return null;
+function InsideDetails() {
+  const addToCalendar = () => {
+    const start = weddingData.dates.icsFormat.dateStart;
+    const end = weddingData.dates.icsFormat.dateEnd;
+    const ics = [
+      "BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Wedora//Wedding//EN","BEGIN:VEVENT",
+      "UID:wedora-" + weddingData.couple.initials + "@wedora",
+      "DTSTAMP:20260101T000000Z",
+      "DTSTART:" + start,
+      "DTEND:" + end,
+      "SUMMARY:" + weddingData.couple.displayName + " Wedding",
+      "LOCATION:Kalyana Mandapam, Thrissur, Kerala",
+      "END:VEVENT","END:VCALENDAR"
+    ].join("\\r\\n");
+    const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "wedora-invitation.ics";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
-    <div className="flex justify-center gap-4 mt-6 mb-2">
-      {Object.entries(time).map(([label, value]) => (
-        <div key={label} className="text-center flex flex-col items-center">
-          <span className="font-cormorant text-2xl text-[var(--text-dark)] leading-none mb-1">{String(value).padStart(2, '0')}</span>
-          <span className="font-inter text-[8px] uppercase tracking-[0.2em] text-[var(--text-muted)]">{label}</span>
-        </div>
-      ))}
-    </div>
-  );
-};
+    <section className="invitation-intro section-shell paper-surface" id="invitation">
+      <div className="section-inner invitation-grid">
+        <Reveal>
+          <div className="invitation-symbol"><Heart size={18} fill="currentColor" /></div>
+          <span className="eyebrow">The invitation</span>
+          <p className="invite-malayalam">{weddingData.strings.invitePrimaryMl}</p>
+          <h2 className="section-title">A day we will remember.<br /><i>A lifetime we will share.</i></h2>
+          <p className="section-intro invitation-copy">{weddingData.strings.inviteSecondaryEn}</p>
+          <div className="invite-signature">{weddingData.couple.groom} <span>&</span> {weddingData.couple.bride}</div>
+          <button className="text-action" onClick={addToCalendar}><CalendarDays size={15} /> Add to calendar</button>
+        </Reveal>
 
-export default function InsideDetails() {
-  const titleRef = useRef(null);
-  const titleInView = useInView(titleRef, { once: true, margin: '-60px' });
+        <Reveal delay={.12}>
+          <div className="date-card">
+            <span className="date-card-top">{weddingData.dates.calendar.dayOfWeek}</span>
+            <strong>{weddingData.dates.calendar.dayNumber}</strong>
+            <span>{weddingData.dates.calendar.month} {weddingData.dates.calendar.year}</span>
+            <div className="date-card-line" />
+            <small>With the blessings of our families</small>
+          </div>
+        </Reveal>
+      </div>
 
-  return (
-    <section className="scroll-section flex items-center justify-center bg-[#F8F7F4] px-6 py-8 overflow-hidden">
-      <div className="w-full max-w-sm mx-auto">
-        {/* Section heading */}
-        <Motion.div
-          ref={titleRef}
-          initial={{ opacity: 0, y: 18 }}
-          animate={titleInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, ease: 'easeOut' }}
-          className="text-center mb-6"
-        >
-          <p className="font-inter text-[10px] uppercase tracking-[0.35em] text-[#6B8E6B] mb-2">The Details</p>
-          <h2 className="font-cormorant text-3xl font-semibold text-[var(--text-dark)]">Ceremony &amp; Reception</h2>
-        </Motion.div>
+      <div className="section-inner event-intro" id="events">
+        <Reveal>
+          <div>
+            <span className="eyebrow">The wedding day</span>
+            <h2 className="section-title">Gather. Celebrate.<br /><i>Begin again.</i></h2>
+          </div>
+          <div className="event-intro-note"><Clock3 size={17} /> Two beautiful moments, one unforgettable day.</div>
+        </Reveal>
 
-        {/* Card */}
-        <div className="glass-card floral-border rounded-[20px] px-6 py-8 relative">
-          <div className="absolute top-3 left-3 w-8 h-8 border-t border-l border-[#B8913A] border-opacity-35 rounded-tl-[16px]" />
-          <div className="absolute top-3 right-3 w-8 h-8 border-t border-r border-[#B8913A] border-opacity-35 rounded-tr-[16px]" />
-          <div className="absolute bottom-3 left-3 w-8 h-8 border-b border-l border-[#B8913A] border-opacity-35 rounded-bl-[16px]" />
-          <div className="absolute bottom-3 right-3 w-8 h-8 border-b border-r border-[#B8913A] border-opacity-35 rounded-br-[16px]" />
-
-          {/* Calendar Block Design */}
-          <Motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="flex flex-col items-center border border-[rgba(107,142,107,0.2)] rounded-2xl p-5 mb-6 bg-[#FAF8F2]/60"
-          >
-            <div className="flex items-center justify-center gap-6 text-[var(--text-dark)]">
-              <div className="text-right border-r border-[rgba(107,142,107,0.3)] pr-5">
-                <p className="font-inter text-[10px] uppercase tracking-widest text-[var(--text-muted)]">{weddingData.dates.calendar.dayOfWeek}</p>
-              </div>
-              <div className="text-center -mt-2">
-                <span className="font-cormorant font-light text-6xl leading-none text-[#4A6A4A]">{weddingData.dates.calendar.dayNumber}</span>
-              </div>
-              <div className="text-left border-l border-[rgba(107,142,107,0.3)] pl-5">
-                <p className="font-cormorant font-semibold text-lg leading-tight">{weddingData.dates.calendar.month}</p>
-                <p className="font-inter text-[10px] tracking-widest text-[var(--text-muted)]">{weddingData.dates.calendar.year}</p>
-              </div>
-            </div>
-
-            <div className="w-full mt-4 pt-4 border-t border-[rgba(107,142,107,0.15)]">
-              <MinimalCountdown />
-            </div>
-          </Motion.div>
-
-          <MuralDivider delay={0.15} />
-          <DetailRow label={
-            <div className="flex flex-col items-center">
-              <span>{weddingData.events.ceremony.titleEn}</span>
-              <span className="font-malayalam text-[13px] text-[#8BA88B] tracking-normal mt-0.5 capitalize">{weddingData.events.ceremony.titleMl}</span>
-            </div>
-          } value={weddingData.events.ceremony.timeText} delay={0.2} />
-          <MuralDivider delay={0.25} />
-          <DetailRow label={
-            <div className="flex flex-col items-center">
-              <span>{weddingData.events.reception.titleEn}</span>
-              <span className="font-malayalam text-[13px] text-[#8BA88B] tracking-normal mt-0.5 capitalize">{weddingData.events.reception.titleMl}</span>
-            </div>
-          } value={weddingData.events.reception.timeText} delay={0.3} />
-          <MuralDivider delay={0.35} />
-
-          <Motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="text-center py-4"
-          >
-             <p className="font-inter text-[10px] uppercase tracking-[0.3em] text-[#B8913A] mb-1">Venue</p>
-             <p className="font-cormorant text-2xl font-medium text-[var(--text-dark)] leading-tight mb-2">{weddingData.venue.name}</p>
-             <p className="font-inter text-[12px] text-[var(--text-muted)] leading-relaxed">
-              {weddingData.venue.addressEn[0]}<br />{weddingData.venue.addressEn[1]}
-            </p>
-          </Motion.div>
-
-          <MuralDivider delay={0.5} />
-
-          {/* Hosted by */}
-          <Motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-60px' }}
-            transition={{ delay: 0.55, duration: 0.6 }}
-            className="text-center pt-3"
-          >
-            <p className="font-inter text-[9px] uppercase tracking-[0.3em] text-[var(--text-muted)] mb-2">Hosted by</p>
-            <p className="font-cormorant italic text-[15px] text-[#4A6A4A] leading-relaxed">
-              {weddingData.hosts[0]}
-              <br />
-              {weddingData.hosts.length > 1 && (
-                <>
-                  <span className="text-[#B8913A] my-1 inline-block opacity-60">✦</span>
-                  <br />
-                  {weddingData.hosts[1]}
-                </>
-              )}
-            </p>
-          </Motion.div>
+        <div className="event-list">
+          {weddingData.events.map((event, index) => (
+            <Reveal key={event.id} delay={index * .08}>
+              <motion.article whileHover={{ y: -5 }} className="event-story-card">
+                <div className="event-number">0{index + 1}</div>
+                <div className="event-main">
+                  <span className="event-kicker">{event.kicker}</span>
+                  <h3>{event.titleEn}</h3>
+                  <p className="event-ml">{event.titleMl}</p>
+                  <div className="event-time"><Clock3 size={15} /> {event.timeText}</div>
+                  <div className="event-place"><MapPinned size={15} /> {event.venue}</div>
+                  <p className="event-address">{event.address}</p>
+                  <a className="outline-action" href={event.mapUrl} target="_blank" rel="noreferrer">Open location</a>
+                </div>
+              </motion.article>
+            </Reveal>
+          ))}
         </div>
       </div>
     </section>
   );
 }
 
+export default InsideDetails;

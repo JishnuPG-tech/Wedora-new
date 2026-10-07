@@ -1,231 +1,55 @@
-@import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Malayalam:wght@300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Noto+Serif+Malayalam:wght@500;600&display=swap");
 
 :root {
-  --ivory: #F8F7F4;
-  --ivory-dark: #F0EDE6;
-  --sage: #6B8E6B;
-  --sage-light: #8BA88B;
-  --sage-dark: #4A6A4A;
-  --gold: #B8913A;
-  --gold-light: #D4AF68;
-  --cream: #FAF8F2;
-  --text-dark: #2C2C2C;
-  --text-muted: #7A7060;
-  --border-light: rgba(107, 142, 107, 0.2);
+  --ivory: #f7f3eb;
+  --paper: #fbf9f4;
+  --paper-2: #efe8da;
+  --ink: #1f2420;
+  --muted: #736f67;
+  --sage: #5d7565;
+  --sage-deep: #31473a;
+  --sage-soft: #dce6dc;
+  --gold: #b89652;
+  --gold-soft: #d9c39b;
+  --wine: #553934;
+  --line: rgba(48, 60, 52, 0.14);
+  --shadow: 0 24px 70px rgba(36, 42, 36, 0.11);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: "DM Sans", "Manrope", system-ui, sans-serif;
+  --ml: "Noto Serif Malayalam", serif;
 }
-
-*, *::before, *::after {
-  box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  background-color: var(--ivory);
-  /* Elegant subtle paper noise texture */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
-  font-family: 'Inter', sans-serif;
-  color: var(--text-dark);
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-.font-cormorant {
-  font-family: 'Cormorant Garamond', serif;
-}
-
-.font-playfair {
-  font-family: 'Playfair Display', serif;
-}
-
-.font-malayalam {
-  font-family: 'Noto Serif Malayalam', serif;
-}
-
-/* Scroll snap container */
-.scroll-container {
-  height: 100dvh;
-  overflow-y: scroll;
-  scroll-snap-type: y mandatory;
-  scroll-behavior: smooth;
-}
-
-.scroll-section {
-  scroll-snap-align: start;
-  min-height: 100dvh;
-}
-
-/* Gold shimmer animation for couple names */
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
-.gold-shimmer {
-  background: linear-gradient(
-    90deg,
-    var(--sage-dark) 0%,
-    var(--gold) 30%,
-    var(--gold-light) 50%,
-    var(--gold) 70%,
-    var(--sage-dark) 100%
-  );
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: shimmer 4s linear infinite;
-}
-
-/* Floating leaf animation */
-@keyframes floatLeaf {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  33% { transform: translateY(-12px) rotate(2deg); }
-  66% { transform: translateY(-6px) rotate(-1deg); }
-}
-
-.float-leaf {
-  animation: floatLeaf 6s ease-in-out infinite;
-}
-
-.float-leaf-delay {
-  animation: floatLeaf 7s ease-in-out 1.5s infinite;
-}
-
-/* Floral border */
-.floral-border {
-  border: 1px solid var(--border-light);
-  box-shadow: 
-    inset 0 0 40px rgba(107, 142, 107, 0.04),
-    0 4px 40px rgba(107, 142, 107, 0.08),
-    0 1px 3px rgba(0,0,0,0.05);
-}
-
-/* Card glass effect */
-.glass-card {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px 0 rgba(107, 142, 107, 0.07), inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-}
-
-/* Countdown box */
-.countdown-box {
-  background: var(--cream);
-  border: 1px solid var(--border-light);
-  box-shadow: inset 0 2px 6px rgba(107, 142, 107, 0.08), 0 1px 3px rgba(0,0,0,0.04);
-  border-radius: 12px;
-}
-
-/* Input styles */
-.wedding-input {
-  width: 100%;
-  background: var(--cream);
-  border: 1px solid var(--border-light);
-  border-radius: 8px;
-  padding: 14px 16px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  color: var(--text-dark);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
-  -webkit-appearance: none;
-}
-
-.wedding-input:focus {
-  border-color: var(--sage);
-  box-shadow: 0 0 0 3px rgba(107, 142, 107, 0.12);
-}
-
-/* Button styles */
-.btn-primary {
-  background: var(--sage);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 14px 28px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
-  min-height: 48px;
-  letter-spacing: 0.02em;
-}
-
-.btn-primary:hover {
-  background: var(--sage-dark);
-  box-shadow: 0 4px 16px rgba(107, 142, 107, 0.3);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: translateY(0px);
-}
-
-.btn-secondary {
-  background: transparent;
-  color: var(--sage);
-  border: 1px solid var(--sage);
-  border-radius: 8px;
-  padding: 12px 20px;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.btn-secondary:hover {
-  background: rgba(107, 142, 107, 0.08);
-}
-
-/* Divider */
-.ornamental-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--sage-light);
-}
-
-.ornamental-divider::before,
-.ornamental-divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--border-light));
-}
-
-.ornamental-divider::after {
-  background: linear-gradient(90deg, var(--border-light), transparent);
-}
-
-/* Scroll indicator pulse */
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); opacity: 1; }
-  50% { transform: translateY(8px); opacity: 0.5; }
-}
-
-.scroll-indicator {
-  animation: bounce 2s ease-in-out infinite;
-}
-
-/* Hide scrollbar but keep functionality */
-.scroll-container::-webkit-scrollbar {
-  display: none;
-}
-.scroll-container {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+html { scroll-behavior: smooth; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--ivory); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .2; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E"); z-index: 100; }
+body.theme-night { --ivory: #121713; --paper: #172019; --paper-2: #223027; --ink: #f5f2ea; --muted: #b3b6ad; --sage: #a8c1aa; --sage-deep: #c2d5c5; --sage-soft: #26372c; --gold: #d8ba73; --gold-soft: #8e7442; --line: rgba(232, 237, 229, 0.12); --shadow: 0 24px 70px rgba(0, 0, 0, .36); }
+a { color: inherit; }
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+img { display: block; max-width: 100%; }
+::selection { background: var(--gold); color: #fff; }
+.wedora-app { min-height: 100svh; overflow-x: clip; }
+.invitation-page { opacity: 0; visibility: hidden; }
+.invitation-page.is-visible { opacity: 1; visibility: visible; }
+.opening-stage { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 20% 20%, rgba(184,150,82,.14), transparent 28%), radial-gradient(circle at 80% 85%, rgba(93,117,101,.15), transparent 30%), #1e2a23; }
+.opening-glow { position: absolute; width: 38rem; height: 38rem; border-radius: 50%; filter: blur(90px); opacity: .24; }
+.opening-glow-one { background: #c3ad78; transform: translate(-30%, -20%); }
+.opening-glow-two { background: #5d7565; transform: translate(28%, 28%); }
+.section-shell { position: relative; padding: clamp(5rem, 10vw, 9rem) 1.25rem; }
+.section-inner { width: min(1160px, 100%); margin: 0 auto; }
+.eyebrow { display: inline-flex; align-items: center; gap: .55rem; color: var(--gold); text-transform: uppercase; letter-spacing: .18em; font-size: .67rem; font-weight: 700; }
+.eyebrow::before, .eyebrow::after { content: ""; width: 22px; height: 1px; background: currentColor; opacity: .8; }
+.section-title { margin: .8rem 0 0; font: 600 clamp(2.7rem, 8vw, 5.6rem)/.88 var(--serif); letter-spacing: -.035em; }
+.section-intro { max-width: 44rem; margin: 1.2rem auto 0; color: var(--muted); line-height: 1.8; font-size: .98rem; }
+.reveal-block { will-change: transform, opacity; }
+.closing-section { min-height: 100svh; display: grid; align-items: end; background: var(--sage-deep); color: #f6f4ec; padding: 0; }
+.closing-photo { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(18,26,21,.02), rgba(18,26,21,.84)), url("/gallery/photo6.jpg") center/cover; opacity: .78; }
+.closing-photo-overlay { position: absolute; inset: 0; background: radial-gradient(circle at 50% 35%, transparent, rgba(0,0,0,.24) 70%); }
+.closing-content { position: relative; z-index: 1; width: min(980px, 100%); padding: clamp(6rem, 12vw, 10rem) 1.25rem 5rem; }
+.closing-malayalam { font-family: var(--ml); font-size: 1rem; color: var(--gold-soft); margin: 1.2rem 0 0; }
+.closing-content h2 { margin: .4rem 0 1rem; font: 500 clamp(3.5rem, 12vw, 8rem)/.82 var(--serif); letter-spacing: -.05em; }
+.closing-content h2 span { color: var(--gold); font-style: italic; }
+.closing-content > p { max-width: 34rem; color: rgba(248,246,240,.78); line-height: 1.8; }
+.closing-date { margin-top: 2rem; font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; }
+.closing-hosts { margin-top: .5rem; color: rgba(248,246,240,.62); font-size: .78rem; }
+@media (min-width: 760px) { .section-shell { padding-inline: 3rem; } .closing-content { padding-inline: 4rem; } }

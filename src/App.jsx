@@ -1,65 +1,102 @@
-import React, { useEffect, useState } from 'react';
-import './features.css';
-import Envelope from './components/Envelope';
-import HeroCover from './components/HeroCover';
-import InsideDetails from './components/InsideDetails';
-import Gallery from './components/Gallery';
-import VenueSection from './components/VenueSection';
-import ReceptionSection from './components/ReceptionSection';
-import FamilySection from './components/FamilySection';
-import RSVPForm from './components/RSVPForm';
-import MusicWidget from './components/MusicWidget';
-import AdminDashboard from './components/AdminDashboard';
-import ScrollProgress from './components/ScrollProgress';
-import { DarkModeToggle } from './components/UIControls';
-import { useDarkMode } from './hooks/useLabHooks';
-import { trackOpen } from './utils/analytics';
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import AdminDashboard from "./components/AdminDashboard";
+import Envelope from "./components/Envelope";
+import FamilySection from "./components/FamilySection";
+import Gallery from "./components/Gallery";
+import HeroCover from "./components/HeroCover";
+import InsideDetails from "./components/InsideDetails";
+import MusicWidget from "./components/MusicWidget";
+import ReceptionSection from "./components/ReceptionSection";
+import RSVPForm from "./components/RSVPForm";
+import ScrollProgress from "./components/ScrollProgress";
+import SectionNav from "./components/SectionNav";
+import UIControls from "./components/UIControls";
+import VenueSection from "./components/VenueSection";
+import { weddingData } from "./config/weddingData";
+import { trackOpen } from "./utils/analytics";
 
-function FloatingLeaf({ style, className }) {
+const sections = [
+  { id: "invitation", label: "Invite" },
+  { id: "events", label: "Events" },
+  { id: "story", label: "Story" },
+  { id: "gallery", label: "Gallery" },
+  { id: "families", label: "Families" },
+  { id: "venue", label: "Venue" },
+  { id: "rsvp", label: "RSVP" },
+];
+
+function App() {
+  if (window.location.pathname === "/admin") return <AdminDashboard />;
+
+  const [isOpened, setIsOpened] = useState(false);
+  const [guestName, setGuestName] = useState("");
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setGuestName(params.get("guest")?.trim() || "");
+  }, []);
+
+  useEffect(() => {
+    if (!isOpened) return;
+    const key = "wedora-opened";
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+    trackOpen(guestName || null);
+  }, [guestName, isOpened]);
+
+  useEffect(() => {
+    document.title = \`\${weddingData.couple.displayName} · Wedora\`;
+  }, []);
+
   return (
-    <div className={`fixed pointer-events-none z-0 ${className}`} style={style}>
-      <svg viewBox="0 0 60 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', height: '100%' }}>
-        <path d="M30 95 C30 95 3 60 3 35 C3 15 15 3 30 3 C45 3 57 15 57 35 C57 60 30 95 30 95Z" fill="#6B8E6B" fillOpacity="0.12" />
-        <path d="M30 95 L30 3" stroke="#6B8E6B" strokeWidth="0.6" strokeOpacity="0.2"/>
-      </svg>
-    </div>
-  );
-}
+    <div className="wedora-app">
+      <ScrollProgress />
+      <AnimatePresence>
+        {!isOpened && (
+          <motion.div
+            className="opening-stage"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, scale: 1.03, filter: "blur(8px)" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+          >
+            <div className="opening-glow opening-glow-one" />
+            <div className="opening-glow opening-glow-two" />
+            <Envelope guestName={guestName} onComplete={() => setIsOpened(true)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-export default function App() {
-  const [loaderDone, setLoaderDone] = useState(false);
-  const [dark, setDark] = useDarkMode();
-
-  const params = new URLSearchParams(window.location.search);
-  const guestName = params.get('guest') || '';
-
-  useEffect(() => { if (loaderDone) trackOpen(guestName); }, [loaderDone, guestName]);
-
-  if (window.location.pathname === '/admin') return <AdminDashboard />;
-
-  return (
-    <div className="relative w-full">
-      {loaderDone && <ScrollProgress />}
-      {loaderDone && <DarkModeToggle dark={dark} setDark={setDark} />}
-      {!loaderDone && <Envelope onOpen={() => setLoaderDone(true)} />}
-
-      <FloatingLeaf className="float-leaf"       style={{ top: '10%', left:  '-20px', width: 80, height: 110, opacity: 0.6 }} />
-      <FloatingLeaf className="float-leaf-delay" style={{ top: '15%', right: '-18px', width: 65, height: 90,  opacity: 0.5, transform: 'scaleX(-1)' }} />
-      <FloatingLeaf className="float-leaf"       style={{ top: '55%', left:  '-15px', width: 55, height: 80,  opacity: 0.4, transform: 'rotate(20deg)' }} />
-      <FloatingLeaf className="float-leaf-delay" style={{ top: '60%', right: '-15px', width: 55, height: 80,  opacity: 0.4, transform: 'rotate(-20deg) scaleX(-1)' }} />
-
-      <div className="scroll-container">
+      <main className={isOpened ? "invitation-page is-visible" : "invitation-page"} aria-hidden={!isOpened}>
         <HeroCover guestName={guestName} />
-        <InsideDetails guestName={guestName} />
-        <VenueSection />
+        <InsideDetails />
         <ReceptionSection />
         <Gallery />
         <FamilySection />
+        <VenueSection />
         <RSVPForm />
-      </div>
+        <section className="closing-section section-shell">
+          <div className="closing-photo" aria-hidden="true"><div className="closing-photo-overlay" /></div>
+          <div className="closing-content">
+            <span className="eyebrow">With love, always</span>
+            <p className="closing-malayalam">{weddingData.strings.invitePrimaryMl}</p>
+            <h2>{weddingData.couple.groom} <span>{weddingData.couple.ampersand}</span> {weddingData.couple.bride}</h2>
+            <p>{weddingData.strings.closingLine}</p>
+            <div className="closing-date">{weddingData.dates.displayFull}</div>
+            <div className="closing-hosts">{weddingData.hosts.join(" · ")}</div>
+          </div>
+        </section>
+      </main>
 
-      {loaderDone && <MusicWidget />}
+      {isOpened && (
+        <>
+          <SectionNav sections={sections} />
+          <UIControls />
+          <MusicWidget />
+        </>
+      )}
     </div>
   );
 }
 
+export default App;
