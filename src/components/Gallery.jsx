@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, X } from "lucide-react";
 import Reveal from "./Reveal";
@@ -7,8 +7,13 @@ import { weddingData } from "../config/weddingData";
 function Gallery() {
   const [active, setActive] = useState(null);
 
-  const next = () => setActive((index) => index == null ? null : (index + 1) % weddingData.gallery.length);
-  const prev = () => setActive((index) => index == null ? null : (index - 1 + weddingData.gallery.length) % weddingData.gallery.length);
+  const next = useCallback(() => {
+    setActive((index) => index == null ? null : (index + 1) % weddingData.gallery.length);
+  }, []);
+
+  const prev = useCallback(() => {
+    setActive((index) => index == null ? null : (index - 1 + weddingData.gallery.length) % weddingData.gallery.length);
+  }, []);
 
   useEffect(() => {
     if (active == null) return;
@@ -20,7 +25,7 @@ function Gallery() {
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => { document.body.style.overflow = ""; window.removeEventListener("keydown", onKey); };
-  }, [active]);
+  }, [active, next, prev]);
 
   return (
     <section className="gallery-section section-shell paper-surface" id="gallery">
@@ -52,13 +57,7 @@ function Gallery() {
           <motion.div className="lightbox" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setActive(null)}>
             <button className="lightbox-close" onClick={() => setActive(null)} aria-label="Close gallery"><X size={22} /></button>
             <button className="lightbox-arrow left" onClick={(event) => { event.stopPropagation(); prev(); }} aria-label="Previous photo"><ArrowLeft size={22} /></button>
-            <motion.figure
-              className="lightbox-figure"
-              initial={{ scale: .94, y: 12 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={{ type: "spring", stiffness: 220, damping: 25 }}
-              onClick={(event) => event.stopPropagation()}
-            >
+            <motion.figure className="lightbox-figure" initial={{ scale: .94, y: 12 }} animate={{ scale: 1, y: 0 }} transition={{ type: "spring", stiffness: 220, damping: 25 }} onClick={(event) => event.stopPropagation()}>
               <img src={weddingData.gallery[active].src} alt={weddingData.gallery[active].alt} />
               <figcaption>{weddingData.gallery[active].label} · {active + 1} / {weddingData.gallery.length}</figcaption>
             </motion.figure>

@@ -26,9 +26,7 @@ const sections = [
   { id: "rsvp", label: "RSVP" },
 ];
 
-function App() {
-  if (window.location.pathname === "/admin") return <AdminDashboard />;
-
+function InvitationPage() {
   const [isOpened, setIsOpened] = useState(false);
   const [guestName, setGuestName] = useState("");
 
@@ -46,7 +44,7 @@ function App() {
   }, [guestName, isOpened]);
 
   useEffect(() => {
-    document.title = \`\${weddingData.couple.displayName} · Wedora\`;
+    document.title = weddingData.couple.displayName + " · Wedora";
   }, []);
 
   return (
@@ -97,6 +95,10 @@ function App() {
       )}
     </div>
   );
+}
+
+function App() {
+  return window.location.pathname === "/admin" ? <AdminDashboard /> : <InvitationPage />;
 }
 
 export default App;
