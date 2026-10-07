@@ -33,10 +33,10 @@ export const weddingData = {
   rsvp: { maxGuests: 5 },
   gallery: [
     { src: "/gallery/photo1.jpg", fallback: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1400&q=82", alt: "Together", span: "tall", label: "Together" },
-    { src: "/gallery/photo2.jpg", fallback: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=82", alt: "Garden walk", span: "wide", label: "Garden walk" },
+    { src: "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=82", fallback: "/gallery/photo2.jpg", "https://images.unsplash.com/photo-1519225421980-715cb0215aed?auto=format&fit=crop&w=1400&q=82", alt: "Garden walk", span: "wide", label: "Garden walk" },
     { src: "/gallery/photo3.jpg", fallback: "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1200&q=82", alt: "Laughing", span: "tall", label: "Laughing" },
     { src: "/gallery/photo4.jpg", fallback: "https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?auto=format&fit=crop&w=1400&q=82", alt: "Sunset", span: "wide", label: "Sunset" },
-    { src: "/gallery/photo5.jpg", fallback: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=82", alt: "Flowers", span: "square", label: "Flowers" },
+    { src: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=82", fallback: "/gallery/photo5.jpg", "https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1200&q=82", alt: "Flowers", span: "square", label: "Flowers" },
     { src: "/gallery/photo6.jpg", fallback: "https://images.unsplash.com/photo-1507504031003-b417219a0fde?auto=format&fit=crop&w=1200&q=82", alt: "Temple", span: "tall", label: "Temple" }
   ]
 };
