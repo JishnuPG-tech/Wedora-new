@@ -1,11 +1,11 @@
 {
-  "name": "Anand & Meera Wedding",
-  "short_name": "A&M Wedding",
-  "description": "Wedding Invitation — Anand & Meera · May 20, 2026",
+  "name": "Anand & Meera · Wedora",
+  "short_name": "Wedora",
+  "description": "A cinematic digital wedding invitation for Anand & Meera.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F8F7F4",
-  "theme_color": "#B8913A",
+  "background_color": "#F7F3EB",
+  "theme_color": "#31473A",
   "orientation": "portrait",
   "icons": [
     {

@@ -1,64 +1,70 @@
-# Wedora E-Wedding Platform
+# Wedora
 
-A premium, highly customizable, mobile-first wedding invitation web application. Designed for modern couples to provide an elegant digital experience to their guests.
+Wedora is a cinematic, mobile-first e-wedding invitation built with React, Vite and Framer Motion. The experience is designed to feel like opening a premium invitation rather than browsing a conventional website.
 
-## Overview
+## Experience
 
-This repository contains the production-ready source code for the Wedora wedding invitation template. Built with modern web technologies, it features a sophisticated UI, smooth animations, RSVP management, and a dedicated admin dashboard.
+- Cinematic envelope opening with a personalized guest greeting
+- Editorial full-screen hero with subtle parallax
+- Natural scrolling with section-aware navigation
+- Event timeline with location actions
+- Story section with animated chapter reveals
+- Asymmetric photo gallery with keyboard-friendly lightbox
+- Family blessings section
+- Lightweight venue cards instead of heavy embedded maps
+- Multi-step RSVP flow with Supabase persistence
+- Supabase-authenticated host studio at /admin
+- Day/night visual mode
+- Optional music control that loads audio only after interaction
+- Social preview image and PWA metadata
 
-## Technical Stack
+## Stack
 
-- Framework: React 19 / Vite 8
-- Styling: Tailwind CSS v4
-- Animation: Framer Motion v12
-- Backend: Supabase (for RSVP and Analytics)
-- Icons: Lucide React
+- React 19
+- Vite 8
+- Framer Motion 12
+- Lucide React
+- Tailwind CSS 4 is retained in the toolchain for future theme extensions
+- Supabase for RSVP and analytics
 
-## Core Features
+## Local setup
 
-- Hero & Countdown: Dynamic landing view with high-quality typography and a precise countdown to the event.
-- Event Details: Structured timeline for ceremonies, receptions, and venue directions.
-- RSVP Management: Guest registration system that syncs directly with the Supabase database.
-- Admin Dashboard: Secure, private route (`/admin`) for hosts to monitor RSVP responses, export guest lists, and track page analytics.
-- Media Support: Integrated background music player and dynamic photo gallery.
-- Responsive Design: Optimized specifically for mobile viewing while maintaining fidelity on desktop displays.
+Requires Node.js 18+.
 
-## Getting Started
+\`\`\`bash
+npm install
+npm run dev
+\`\`\`
 
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-- Supabase account (for database functionality)
+For RSVP and host features, add:
 
-### Installation
+\`\`\`env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+\`\`\`
 
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Configure environment variables. Create a `.env` file in the root directory:
-   ```env
-   VITE_SUPABASE_URL=your_supabase_project_url
-   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_ADMIN_PASSWORD=your_secure_dashboard_password
-   ```
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+The host studio uses the Supabase Auth account configured in that project. Do not put a dashboard password fallback into the client bundle.
 
-### Configuration
+## Wedding configuration
 
-All event-specific data (names, dates, venues, strings) is centralized in `src/config/weddingData.js`. Modify this single configuration file to adapt the template for new clients without altering the underlying component structure.
+Client-specific content lives in:
+
+\`src/config/weddingData.js\`
+
+That file controls the couple, dates, events, family details, story copy, gallery metadata and RSVP limits.
 
 ## Deployment
 
-This application is configured for seamless deployment on Vercel. 
-1. Import the repository into your Vercel dashboard.
-2. Ensure the build command is set to `npm run build` and output directory to `dist`.
-3. Add the required environment variables in the Vercel project settings.
+The repository is configured for Vercel with the existing \`vercel.json\` SPA rewrite.
+
+\`\`\`bash
+npm run build
+\`\`\`
+
+## Design direction
+
+Wedora follows an editorial Kerala-inspired palette of ivory, eucalyptus green and antique gold. The interface intentionally uses fewer generic cards, more photography, stronger typography, cinematic transitions and restrained floating controls.
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+MIT. See LICENSE.

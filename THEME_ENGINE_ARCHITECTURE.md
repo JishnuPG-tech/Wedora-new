@@ -1,55 +1,118 @@
-# Premium E-Wedding Card Engine - Architecture & Design System
+# Wedora Design Architecture
 
-This document serves as the supreme memory buffer and foundational knowledge base for this project. 
-**Note to future AI Assistants:** Read this document BEFORE writing any code. It contains the exact technical stack, stylistic rules, and architectural map needed to instantly swap out this "Kerala Hindu" theme for the upcoming "Islamic Royal" or "Christian Elegant" themes.
+## Product idea
 
----
+Wedora should feel like a digital invitation first and a website second.
 
-## 1. Core Technical Architecture
-- **Framework:** React + Vite
-- **Styling:** Tailwind CSS (v4)
-- **Animations:** `framer-motion` (Extensively used for cinematic scrolling and floating elements)
-- **Icons:** `lucide-react` (Strictly used for a sleek, modern UI. Do NOT use emojis for important actions).
-- **Backend/Database:** Supabase (`src/config/supabase.js`) handling the `rsvps` table.
-- **Routing:** Manual routing in `App.jsx`. `react-router-dom` is DELIBERATELY omitted to keep the bundle size minimal. Vercel SPA routing is successfully handled via `vercel.json`.
+The visual system is built around:
+- cinematic entry
+- editorial typography
+- natural scroll
+- photography-led sections
+- restrained interaction chrome
+- data-driven wedding content
+- mobile-first touch targets
 
-## 2. The Multi-Theme Philosophy (Data Decoupling)
-The entire application UI contains **zero hardcoded content**.
-ALL names, dates, quotes, string translations, and event details must exclusively be served from:
-`src/config/weddingData.js`
+## Application structure
 
-To create a new theme (like Islamic or Christian), you only need to swap out `weddingData.js` strings, the background colors in `App.jsx`, and font selections in `index.css`. The underlying Framer Motion engine remains untouched.
+React + Vite is the runtime. Framer Motion handles reveal, parallax, transition and lightbox motion. Lucide provides UI icons.
 
-## 3. The "Glassmorphism & Luxury" Design Rules
-When building new themes for this engine, adhere strictly to these UI constraints to maintain its "Expensive Agency" feel:
-- **No Harsh Colors:** Never use primary `#FF0000` or `#00FF00`. All backgrounds must be beautifully muted (e.g. `#F8F7F4` off-white).
-- **Premium Borders:** Use `border-[rgba(184,145,58,0.3)]` (soft gold opacity borders) to simulate glass.
-- **Subtle Drop Shadows:** Avoid heavy `shadow-lg`; heavily utilize soft glowing box-shadows or Framer Motion pulsing (`boxShadow: ['0px 0px 0px ...', '...']`).
-- **Typography:** 
-    - *Body text:* `font-inter` (Keep tracking wide: `tracking-[0.2em]`, heavily uppercase for labels).
-    - *Headers:* `font-cormorant` for a high-end serif luxury look. 
+The invitation is manually routed:
+- / opens the guest invitation
+- /admin opens the host studio
 
-## 4. Admin Dashboard System
-- **Path:** `/admin` (Manually routed in `App.jsx`).
-- **Security:** Hardcoded PIN authentication (`Jishnu2005` in `src/components/AdminDashboard.jsx`).
-- **Data Flow:** Uses `supabaseClient` to fetch, sort, and display attendees. Includes UI headcount cap constraints (Max 5 via `RSVPForm`).
+No client-side router is required for this template.
 
-## 5. Future Concept Templates
+## Data layer
 
-### A. The "Royal Palace" Theme (Maximalist Hindu Dark Mode)
-A concept to act as the heavy, rich counterpart to the current minimal Kerala theme.
-- **Color Palette:** Deep Maroon/Crimson (`#4A0E17`) fading to Indigo. Heavy Antique Gold Foil accents (`#D4AF37`) and text.
-- **Entry Animation:** Replace the sliding paper envelope with two massive, intricately carved heavy Palace Doors (Jharokha Indian arches) that slide apart horizontally to reveal the dark invitation inside.
-- **UI Elements:** Subtle flickering clay Diya lamps at the footer. Instead of modern confetti, a cascading Framer Motion waterfall of falling orange Marigold petals.
-- **Typography:** Heavy ornate Sanksrit-display fonts for headers, paired with elegant scripts.
+Wedding-specific information belongs in \`src/config/weddingData.js\`.
 
-### B. Building Islamic or Christian Themes
-When the user requests to build the **Islamic** or **Christian** themes, follow this exact workflow:
-1. Create a git branch (e.g., `git checkout -b theme-islamic`).
-2. Update the `weddingData.js` strings to feature Arabic/Biblical quotes.
-3. Update `index.css` root variables (Change the gold `#B8913A` to Emerald `#044A3A` or Champagne `#F2EBE0`).
-4. Replace the "Lotus" SVG in `HeroCover.jsx` with a Crescent/Star or Cross SVG.
-5. Deploy.
+The data model contains:
+- couple
+- dates
+- events
+- families
+- hosts
+- story
+- RSVP rules
+- gallery
 
----
-*Created by Jishnu P G. Powered by React, Tailwind v4, and Framer Motion.*
+Components should render from this configuration instead of duplicating client-specific names, venues or dates.
+
+## Visual tokens
+
+The primary design tokens live at the top of \`src/index.css\`.
+
+Core tokens:
+- ivory and paper surfaces
+- eucalyptus greens
+- antique gold accents
+- editorial serif typography
+- compact uppercase labels
+- generous section spacing
+
+Night mode is implemented by applying \`theme-night\` to the document body and swapping the same CSS variables. The markup remains unchanged.
+
+## Interaction system
+
+### Opening
+The envelope is a single interaction gate. The seal, flap and paper animate as one sequence, then reveal the invitation.
+
+### Scroll
+Strict scroll snap is intentionally avoided. Guests can move naturally through long content. A 2px gold progress line provides orientation, while SectionNav highlights the active chapter.
+
+### Gallery
+Photos are lazy-loaded and opened in an overlay with:
+- Escape to close
+- Left and Right Arrow navigation
+- previous and next controls
+- body scroll locking while open
+
+### RSVP
+RSVP is a four-step progressive form:
+1. name
+2. attendance
+3. guest details
+4. message
+
+The form writes directly to the Supabase \`rsvps\` table when configured.
+
+## Host studio
+
+The /admin experience uses Supabase Auth instead of a hardcoded PIN.
+
+The dashboard reads RSVP data from Supabase and shows:
+- total replies
+- confirmed attendance
+- declined replies
+- total guest seats
+- searchable responses
+- CSV export
+
+Production deployment should pair this UI with Supabase Row Level Security policies that restrict RSVP access to authenticated hosts and allow only the intended public insert policy.
+
+## Performance principles
+
+- Prefer static imagery over iframe maps.
+- Do not autoplay audio. The music player uses preload=\"none\".
+- Lazy-load gallery images.
+- Keep animation transforms on compositor-friendly properties.
+- Avoid strict scroll containers and duplicated gallery asset pipelines.
+- Keep public assets as the stable URL source for gallery images.
+
+## Future themes
+
+The architecture supports theme packs without changing the invitation flow. A future theme should primarily change:
+- token values
+- decorative motifs
+- opening animation treatment
+- typography
+- weddingData copy
+
+Possible future themes:
+- Royal Heritage
+- Islamic Royal
+- Christian Elegant
+- Minimal Champagne
+
+The invitation journey remains the shared product foundation.
